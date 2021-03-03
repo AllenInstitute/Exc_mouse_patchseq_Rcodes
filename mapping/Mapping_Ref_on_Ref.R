@@ -18,13 +18,15 @@ library(Matrix)
 library(scrattch.hicat)
 source(paste0("//allen/programs/celltypes/workgroups/rnaseqanalysis/shiny/patch_seq/star/",
               "mouse_patchseq_script_repository/patchseq/patchseq.new.R"))
-source("/allen/programs/celltypes/workgroups/rnaseqanalysis/Fahimehb/Patchseq-Rcodes/Utils.R")
+#source("/allen/programs/celltypes/workgroups/rnaseqanalysis/Fahimehb/Patchseq-Rcodes/Utils.R")
+source("utils/Utils.R")
 
 ##########################################################################################
 ### Setting up the paths: ################################################################
 ##########################################################################################
 
-work.dir = "/allen/programs/celltypes/workgroups/rnaseqanalysis/Fahimehb/EXC_patchseq_paper_2020/"
+work.dir = "/allen/programs/celltypes/workgroups/rnaseqanalysis/agatab/exc_mouse_patchseq_R/"
+#work.dir = "/allen/programs/celltypes/workgroups/rnaseqanalysis/Fahimehb/EXC_patchseq_paper_2020/"
 
 facs.anno.path = paste0("//allen/programs/celltypes/workgroups/rnaseqanalysis/shiny/facs_seq/",
                         "mouse_V1_ALM_20180520/anno.feather")
@@ -114,7 +116,7 @@ for (i in 1:12){
   All.test.cells <- c(All.test.cells, test.cells)
 }
 
-save(FACS.memb, file= paste0(work.dir, "/V1_ALM_FACS_ON_FACS_REF_PROB.rda"))
+save(FACS.memb, file= paste0(work.dir, "/derived_data/V1_ALM_FACS_ON_FACS_REF_PROB.rda"))
 select.cl = labels(dend.labeled)
 Tree_mapping_probability = compute_mapping_probability(memb = FACS.memb, 
                                                        select.cells = FACS.cells,  
@@ -125,12 +127,16 @@ Tree_mapping_probability = compute_mapping_probability(memb = FACS.memb,
 
 Tree_mapping_probability = Tree_mapping_probability[select.cl, select.cl]
 
-save(Tree_mapping_probability, file = paste0(work.dir, "/V1_ALM_REF_PROB_MAT.rda"))
+save(Tree_mapping_probability, file = paste0(work.dir, "/derived_data/V1_ALM_REF_PROB_MAT.rda"))
 
 
-ggplot(data = melt(Tree_mapping_probability), aes(x=Var1, y=Var2, fill=value)) +
+p1 <- ggplot(data = melt(Tree_mapping_probability), aes(x=Var1, y=Var2, fill=value)) +
   geom_tile()+ theme(axis.text = element_text(size=7)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   xlab("Clustering lable") + ylab("NN Mapping lables") +
   scale_fill_gradient(low = "white", high = "red")
 
+ggsave(paste0(work.dir, "/figures/FACS_reference_mapping.pdf"),
+       p1, 
+       width = 16, height = 12, 
+       useDingbats = F, dpi = 700)
