@@ -17,7 +17,7 @@ library("readxl")       # For reading Callaway xlsx annotation
 
 #################   Constants   #######################
 # DETERMINE WHICH REFERENCE TO USE!
-referenceName = "FACS" #Patch-Seq
+referenceDatasetName = "FACS" #Patch-Seq
 filtReference <- c("L2/3 IT","L5 IT","L6 IT")
 filtTarget    <- c("L23_AL", "L23_PM")
 output_dir <- "//allen/programs/celltypes/workgroups/rnaseqanalysis/agatab/exc_mouse_patchseq_R/derived_data/"
@@ -25,9 +25,9 @@ output_file_name <- "input_data_L23_Callaway_allIT_FACS.RData"
 
 #################   Directories   #######################
 ## Folder location for reference feather files (default to FACS)
-if (referenceName == "FACS"){
+if (referenceDatasetName == "FACS"){
   referenceFolder <- "//allen/programs/celltypes/workgroups/rnaseqanalysis/shiny/facs_seq/Mm_VISp_AIT2.3.0_20047_202005/"
-} else if (referenceName == "Patch-Seq"){
+} else if (referenceDatasetName == "Patch-Seq"){
   referenceFolder <- "//allen/programs/celltypes/workgroups/rnaseqanalysis/shiny/patch_seq/star/mouse_patchseq_VISp_current/"
 } else {
   referenceFolder <- "//allen/programs/celltypes/workgroups/rnaseqanalysis/shiny/facs_seq/Mm_VISp_AIT2.3.0_20047_202005/"
@@ -45,7 +45,7 @@ dendReference <- "/allen/programs/celltypes/workgroups/rnaseqanalysis/shiny/patc
 #################   Format Reference data/metadata   #######################
 annoReference <- read_feather(paste(referenceFolder,"anno.feather",sep=""))
 exprReference <- feather(paste(referenceFolder,"data.feather",sep=""))
-if (referenceName == "Patch-Seq"){
+if (referenceDatasetName == "Patch-Seq"){
   # If using Patch-seq as reference, remember to exclude FACS cells from Patch-Seq annotation file
   nonFACSReference <- annoReference$collection_label!="FACS"
   exprReference     <- exprReference[nonFACSReference,]
