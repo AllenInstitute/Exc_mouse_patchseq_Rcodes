@@ -76,8 +76,8 @@ cellsTarget <- setdiff(colnames(datTarget), c("GeneID", "Symbol"))
 ## Log2 cpm to normalize the data
 datTarget <- logCPM(as.matrix(datTarget[,cellsTarget]))
 rownames(datTarget) <- genesTarget
-
-
+# Align annotation cell IDs with the data
+annoTarget <- annoTarget[match(colnames(datTarget),annoTarget$Sample),] 
 
 #################   Match genes across data sets   #######################
 #Change all gene names to upper case if original .tsv
